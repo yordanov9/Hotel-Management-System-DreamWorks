@@ -9,9 +9,12 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from os import path
 from os.path import join
 from pathlib import Path
 import environ
+import dj_database_url
+import django_heroku
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from crispy_forms.templatetags import crispy_forms_filters
 
@@ -26,9 +29,9 @@ environ.Env.read_env()
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://hoteldreamworks.herokuapp.com/', '127.0.0.1']
 
 # Application definition
 
@@ -57,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
 ]
 
 ROOT_URLCONF = 'hms.urls'
@@ -128,7 +133,8 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = ''
+STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = (
     join(BASE_DIR, 'static'),
 )
@@ -140,3 +146,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = join(BASE_DIR, 'media')
+django_heroku.settings(locals())
